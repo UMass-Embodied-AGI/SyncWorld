@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="SyncWorld is a visually calibrated world model that serves as a zero-shot simulator across unseen robotic environments.">
+  <meta name="keywords" content="SyncWorld, world models, visual calibration, robot learning, video generation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SyncWorld: Visual Calibration Enables World Models as Zero-Shot Simulators</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon.ico"  type="image/x-icon">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            <img src="./static/images/syncworld_logo.png" alt="SyncWorld logo" class="title-logo">
+            <span class="gradient-text">SyncWorld</span>
+          </h1>
+          <h2 class="subtitle is-3 publication-subtitle">
+            <span class="subtitle-line">Visual Calibration Enables World Models as </span>
+            <span class="subtitle-line">Zero-Shot Simulators</span>
+          </h2>
+
+          <div class="is-size-5 publication-authors">
+            <div class="author-row">
+              <span class="author-block"><a href="https://yyuncong.github.io/">Yuncong Yang</a>*<sup>1</sup>,</span>
+              <span class="author-block"><a href="https://www.hanzht.com/">Zhengtao Han</a>*<sup>1</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/ozyurtf/">Furkan Özyurt</a>*<sup>2</sup>,</span>
+              <span class="author-block"><a href="https://miicheyang.github.io/">Zeyuan Yang</a><sup>1</sup>,</span>
+            </div>
+            <div class="author-row">
+              <span class="author-block"><a href="https://hanyangclarence.github.io/">Han Yang</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://xjay18.github.io/">Junyi Cao</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://haoyuzhen.com/">Haoyu Zhen</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://yilundu.github.io/">Yilun Du</a><sup>3</sup>,</span>
+              <span class="author-block"><a href="https://people.csail.mit.edu/ganchuang/">Chuang Gan</a><sup>1</sup></span>
+            </div>
+          </div>
+
+          <div class="is-size-5 publication-authors publication-affiliations">
+            <span class="author-block"><sup>1</sup>UMass Amherst,</span>
+            <span class="author-block"><sup>2</sup>NYU,</span>
+            <span class="author-block"><sup>3</sup>Harvard</span>
+          </div>
+
+          <div class="publication-note">* Equal contribution</div>
+
+          <div class="publication-links" aria-label="Project links">
+            <span class="link-block">
+              <span class="button is-normal is-rounded is-dark is-static project-link-unavailable" aria-label="Paper coming soon">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Paper <small>Coming soon</small></span>
+              </span>
+            </span>
+            <span class="link-block">
+              <span class="button is-normal is-rounded is-dark is-static project-link-unavailable" aria-label="Code coming soon">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code <small>Coming soon</small></span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section abstract-section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified abstract-copy">
+          <p>
+            World models are increasingly used as policy-in-the-loop imagination environments, where reliable rollouts require fine-grained controllability with respect to low-level robot actions. A key obstacle to scaling such models in robotics is that actions are not a universal language in pixel space: changes in visual environment, camera view, robot placement, or embodiment alter how the same numerical action manifests visually, leading to conflicting supervision under mixed training and brittle generalization at deployment. We introduce <strong>SyncWorld</strong>, an action-conditioned world model that serves as a zero-shot simulator across unseen environments without any additional training. SyncWorld leverages a visual calibration episode—paired frames and actions that showcase all the controllable degrees of freedom—to specify the setup-specific <em>Action–Visual Mapping</em> in context. Training with visual calibration contexts teaches the model to interpret actions through visual evidence and to leverage interaction history when explicit calibration is unavailable. Experiments show that SyncWorld can accurately simulate action outcomes in previously unseen settings, and that its capability of simulating rollouts enables test-time policy improvement without training.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== More Qualitative Results ======== -->
+<section class="section" id="qualitative-results">
+  <div class="container" style="max-width: 1100px;">
+
+    <!-- ===== 1. Additional Examples of World Model Quality ===== -->
+    <div style="margin-bottom: 4rem;">
+      <h3 class="title is-3">Additional Examples of World Model Quality</h3>
+      <div class="content has-text-justified" style="max-width: 900px;">
+        <p>
+          We first provide additional qualitative comparisons for the world modeling results discussed in the main paper.
+          Specifically, we select examples spanning diverse environments (real-world, LIBERO, ManiSkill), camera viewpoints, and robot embodiments, and compare our generated video segments against the corresponding ground-truth videos.
+        </p>
+
+      </div>
+
+      <!-- Row 1: Real examples -->
+      <div class="columns is-centered" style="margin-bottom: 0.5rem;">
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 1)</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/real_1.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 2)</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/real_2.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+      </div>
+      <!-- Row 2: Real + LIBERO -->
+      <div class="columns is-centered" style="margin-bottom: 0.5rem;">
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 3)</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/real_3.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">LIBERO</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/libero_1.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+      </div>
+      <!-- Row 3: ManiSkill examples -->
+      <div class="columns is-centered">
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">ManiSkill (Example 1)</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/maniskill_1.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+        <div class="column is-6">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">ManiSkill (Example 2)</p>
+          <div class="comparison-video">
+            <span class="comparison-label comparison-label-gt">GT</span>
+            <span class="comparison-label comparison-label-pred">Pred</span>
+            <video src="qualitative_results/segments_qualitative_examples_new/maniskill_2.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 2. Cross-View 3D Consistency ===== -->
+    <div style="margin-bottom: 4rem;">
+      <h3 class="title is-3">Cross-View 3D Consistency</h3>
+      <div class="content has-text-justified" style="max-width: 900px;">
+        <p>
+          We provide qualitative evidence that rollouts generated from different camera views are 3D consistent.
+          For the same action sequence, we generate videos from two distinct viewpoints and sample frames from both generated rollouts. We then apply VGGT to reconstruct a point cloud from each frame sequence.
+        </p>
+        <p>
+          The resulting reconstructions show that the generated videos are visually consistent with a shared underlying 3D scene structure: the point clouds can be reconstructed reasonably well from both views, and their geometry is broadly consistent with each other as well as with the ground-truth reconstruction. These results provide additional evidence that the model captures more than view-specific appearance statistics, and instead learns a meaningful 3D-aware representation of the manipulated scene.
+        </p>
+      </div>
+
+      <!-- Prediction -->
+      <div style="margin-bottom: 1.5rem;">
+        <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Generated Rollout (SyncWorld)</p>
+        <div class="columns is-centered">
+          <div class="column is-10">
+            <video src="qualitative_results/multiview_consistency/pred_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          </div>
+        </div>
+      </div>
+      <!-- Ground Truth -->
+      <div>
+        <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Ground Truth</p>
+        <div class="columns is-centered">
+          <div class="column is-10">
+            <video src="qualitative_results/multiview_consistency/gt_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 3. Policy Improvement with GPC-Rank ===== -->
+    <div style="margin-bottom: 2rem;">
+      <h3 class="title is-3">Policy Improvement with GPC-Rank</h3>
+      <div class="content has-text-justified" style="max-width: 900px;">
+        <p>
+          Finally, we visualize how our world model supports policy improvement through
+          <strong>GPC-Rank</strong> using a representative <code style="color: black;">pick up bbq sauce</code> example from LIBERO.
+        </p>
+        
+        <p>
+          For this case, we include three trajectories for comparison:
+        </p>
+        
+        <ul>
+          <li>
+            the full trajectory obtained by concatenating the generated rollout of the selected action candidate at each decision step;
+          </li>
+          <li>
+            the actual trajectory executed by the policy after test-time improvement with GPC-Rank;
+          </li>
+          <li>
+            the baseline trajectory without such improvement.
+          </li>
+
+        </ul>
+        
+        <p>
+          These qualitative comparisons illustrate how the world model can serve as a test-time simulator for action selection. In this example, the improved policy produces a more successful and stable pickup behavior, while the baseline trajectory fails to interact with the target object as reliably.
+        </p>
+      </div>
+      <div class="columns is-centered" style="margin-top: 1rem;">
+        <div class="column is-8">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Concatenated Generated Rollout (SyncWorld)</p>
+          <video src="qualitative_results/policy_qualitative_examples/pred/bbq_sauce_concat.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Improved Policy Trajectory (with GPC-Rank)</p>
+          <video src="qualitative_results/policy_qualitative_examples/baseline/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Baseline Policy Trajectory (without GPC-Rank)</p>
+          <video src="qualitative_results/policy_qualitative_examples/gt/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== 4. Calibration Videos ===== -->
+    <div style="margin-bottom: 4rem;">
+      <h3 class="title is-3">Calibration Videos</h3>
+      <div class="content has-text-justified" style="max-width: 900px;">
+        <p>
+          We include representative visual calibration episodes that specify the setup-specific action--visual mapping.
+          The motion order, direction, and magnitude vary across episodes, yet each sequence provides enough visual evidence for the model to infer controllable image-space motion.
+        </p>
+      </div>
+
+      <div class="columns is-centered" style="margin-top: 1rem;">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Eval Calibration Episode</p>
+          <video src="qualitative_results/calibration_examples/calibration_episode_5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Maniskill Eval Calibration Episode</p>
+          <video src="qualitative_results/calibration_examples/calibration_episode_6.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">RLBench Training Calibration Episode</p>
+          <video src="qualitative_results/calibration_examples/calibration_episode_7.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 5. Controllability ===== -->
+    <div style="margin-bottom: 2rem;">
+      <h3 class="title is-3">Controllability</h3>
+      <div class="content has-text-justified" style="max-width: 900px;">
+        <p>
+          We first verify controllability in unseen environments with a <em>seen</em> embodiment (ManiSkill), where the model faithfully follows
+          primitive low-level motions [+x, +y, +z, +yaw, +pitch, +roll] and produces the expected directional changes in image space.
+          We then stress-test embodiment generalization by applying the same primitives on an <em>unseen</em> robot arm whose kinematics and
+          gripper geometry are absent from training. Despite this shift, the generated videos remain largely well controlled.
+        </p>
+        <p>
+          While the <em>without calibration</em> setting achieves numerically close performance in several main-paper experiments,
+          its qualitative controllability degrades here. Without explicit visual calibration, the model is less consistent in mapping
+          each action dimension to the correct visual motion direction, particularly on unseen embodiments.
+        </p>
+      </div>
+
+      <!-- ---- Seen Embodiment, Unseen Environment (ManiSkill) ---- -->
+      <h4 class="title is-4" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Seen Embodiment, Unseen Environment (ManiSkill)</h4>
+
+      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
+        <span class="tag is-success is-medium" style="vertical-align: middle; margin-right: 0.5rem;">With</span> Visual Calibration
+      </h5>
+      <div class="columns is-centered is-multiline" style="margin-bottom: 1.5rem;">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
+          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+
+      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
+        <span class="tag is-danger is-medium" style="vertical-align: middle; margin-right: 0.5rem;">Without</span> Visual Calibration
+      </h5>
+      <div class="columns is-centered is-multiline" style="margin-bottom: 2.5rem;">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
+          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+
+      <!-- ---- Unseen Embodiment ---- -->
+      <h4 class="title is-4" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Unseen Embodiment</h4>
+
+      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
+        <span class="tag is-success is-medium" style="vertical-align: middle; margin-right: 0.5rem;">With</span> Visual Calibration
+      </h5>
+      <div class="columns is-centered is-multiline" style="margin-bottom: 1.5rem;">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
+          <video src="qualitative_results/controllability_captioned/with_calib/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+
+      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
+        <span class="tag is-danger is-medium" style="vertical-align: middle; margin-right: 0.5rem;">Without</span> Visual Calibration
+      </h5>
+      <div class="columns is-centered is-multiline">
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+        <div class="column is-4">
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
+          <video src="qualitative_results/controllability_captioned/without_calib/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</body>
+</html>
