@@ -362,7 +362,6 @@ comparing numbers against the paper or porting a recipe across the two implement
 | [Evaluation](#evaluation)                          | Full-episode rollout evaluation: checkpoint and eval-set preparation, per-set commands, outputs.                         |
 | [SFT Config Schema](./docs/sft_config.md)          | The typed TOML schema every recipe is validated against, and how a TOML key maps onto the config tree.                   |
 | [Visual Calibration](./docs/visual_calibration.md) | How the per-DoF calibration sweeps are generated, what they record, and how the model segments and consumes them.        |
-| [FAQ](./docs/faq.md)                               | Troubleshooting (OOM, NCCL hangs, slow training), environment variables, and common pitfalls.                            |
 
 ## Citation
 
