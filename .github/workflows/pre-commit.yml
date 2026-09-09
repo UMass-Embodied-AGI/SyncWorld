@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: OpenMDW-1.1
+
+name: Pre-commit
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      # No `lfs: true`: the repo tracks no LFS objects, and the two pointers left
+      # in history have no blobs on the server, so fetching them 404s.
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+      # Pinned: uv >=0.11.32 rejects the committed `uv.lock` and re-resolves it, which makes the
+      # `uv-lock` hook rewrite the file and fail the job. 0.11.31 validates it offline in 2 ms.
+      # Raising this pin requires regenerating `uv.lock` with the new uv in the same commit.
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.31"
+      - run: uvx pre-commit@4.5.1 run -a -c ci/.pre-commit-config-base.yaml
+      - run: uvx pre-commit@4.5.1 run -a

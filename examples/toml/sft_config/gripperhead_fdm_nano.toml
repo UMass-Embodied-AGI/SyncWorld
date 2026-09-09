@@ -1,0 +1,119 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: OpenMDW-1.1
+
+# Cosmos3-Nano forward-dynamics (FDM) pretraining on the gripperhead format.
+#
+# This file IS the reference recipe. Every [gripperhead] value below is the shipped default, so
+# deleting the block changes nothing — it is spelled out here to be readable and greppable. The
+# schema (types, ranges, per-field docs) lives in GripperheadConfig:
+#   cosmos_framework/configs/toml_config/sft_config.py
+#
+# Parallelism is the only thing tuned for a single GPU. Scale it from the command line instead of
+# editing this file — see README.md ("Training"):
+#   -- model.config.parallelism.data_parallel_shard_degree=8 dataloader_train.max_samples_per_batch=4
+#
+# Required environment (paths only; no recipe knob reads the environment):
+#   GRIPPERHEAD_DATA_ROOTS   comma-separated dataset roots
+#   BASE_CHECKPOINT_PATH     Cosmos3-Nano DCP dir (from convert_model_to_dcp)
+#   WAN_VAE_PATH             Wan2.2_VAE.pth
+#   QWEN3VL_ASSETS           local text-tokenizer/processor dir (omit to download from HuggingFace)
+
+[job]
+task       = "vfm"
+experiment = "gripperhead_fdm_nano"
+project    = "cosmos3"
+group      = "gripperhead_fdm"
+name       = "gripperhead_fdm_nano"
+wandb_mode = "disabled"          # "online" / "offline" to log
+
+[model]
+precision = "bfloat16"
+
+[model.parallelism]
+data_parallel_shard_degree     = 1   # single GPU; set to the GPU count for 1-node FSDP
+data_parallel_replicate_degree = 1   # >1 = DDP-of-FSDP across nodes
+
+[model.activation_checkpointing]
+mode           = "full"
+save_ops_regex = ["fmha"]
+
+[model.tokenizer]
+vae_path = "${oc.env:WAN_VAE_PATH}"
+
+[model.text_tokenizer]
+# Point at a local dir for offline runs; comment out to resolve from HuggingFace.
+pretrained_model_name = "${oc.env:QWEN3VL_ASSETS}"
+
+[optimizer]
+lr = 5.0e-05                     # action heads get 5x via lr_multipliers
+
+[scheduler]
+cycle_lengths = [174000]         # >= trainer.max_iter (constant LR)
+
+[trainer]
+max_iter        = 174000
+grad_accum_iter = 1
+logging_iter    = 10
+
+[checkpoint]
+load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
+save_iter = 500
+
+[dataloader_train]
+max_samples_per_batch = 4        # count-based batch, per rank
+
+# ---------------------------------------------------------------------------------------------
+# The FDM/IDM recipe. See GripperheadConfig for what each field does.
+# ---------------------------------------------------------------------------------------------
+[gripperhead]
+roots      = "${oc.env:GRIPPERHEAD_DATA_ROOTS}"
+resolution = 512
+
+# forward_dynamics | inverse_dynamics | joint  (all three are instruction-free)
+task_mode       = "forward_dynamics"
+joint_p_inverse = 0.5
+
+# Horizon: 25 sparse history frames @ stride 3 -> 16 dense predicted frames.
+num_history       = 25
+num_pred          = 16
+history_stride    = 3
+history_min       = 9
+future_min        = 5
+p_include_history = 0.8
+
+use_wrist = false                # true = [main | wrist] side-by-side, wide "<res>_w2" tier
+
+# Action = 7D [dpos_cm(3), deuler_deg(3), gripper(1)]: units carry the scale, no per-dim stats.
+action_pose_convention   = "backward_framewise"
+action_rotation_format   = "euler_xyz"
+action_translation_scale = 100.0      # metres -> centimetres
+action_rotation_scale    = 57.2958    # radians -> degrees
+p_null_action            = 0.1        # action-CFG unconditional branch
+
+# Calibration sweep as K conditioning items (needs a sibling calibration/ dir per episode).
+use_calibration       = true
+calib_segments        = 6
+calib_seg_len         = 5
+calib_frame_interval  = 3
+p_include_calibration = 0.9
+
+# Augmentation.
+p_pose_axis_aug        = 0.6      # 0 disables axis aug entirely
+axis_aug_mode          = "all"
+contact_bias_prob      = 0.5
+include_counterfactual = true
+include_perturb        = false
+
+# Masked-history distillation: hide part of the real history so the model must infer it from the
+# other modality, plus a teacher/student consistency term on calibration-nulled pairs.
+p_mask_history = 0.3
+lambda_cons    = 0.25
+p_cons         = 0.5
+
+# Loss weights.
+action_loss_weight  = 0.05       # no-op in pure forward_dynamics
+gripper_loss_weight = 1.0
+
+# true = inherit the trained action heads from checkpoint.load_path (continuing a gripperhead run).
+# Set false when load_path is the public Cosmos3-Nano base, so the heads init fresh.
+resume_action_heads = true

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: OpenMDW-1.1
+#
+# Conda base environment. This file pins ONLY the Python interpreter.
+#
+# Everything else — PyTorch + CUDA, flash-attn, NATTEN, Transformer Engine, Megatron-Core and the
+# ~400 other runtime packages — is published as wheels on PyPI, download.pytorch.org and NVIDIA's
+# package index, not on conda channels, so conda cannot install them. Those come from `uv sync`,
+# which resolves nothing at install time: it replays the committed `uv.lock`.
+#
+# The split is what makes the install reproducible end to end:
+#   conda        -> exact Python interpreter (this file)
+#   uv.lock      -> exact version of every Python package, including git commits
+#
+#   conda env create -f environment.yml
+#   conda activate syncworld
+#   UV_PROJECT_ENVIRONMENT="$CONDA_PREFIX" uv sync --frozen --extra train --group cu130-train
+#
+# See README.md ("Installation") for the full walkthrough.
+name: syncworld
+channels:
+  - defaults
+dependencies:
+  - python=3.13.15
+  - pip
