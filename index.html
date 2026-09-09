@@ -46,23 +46,24 @@
           <div class="is-size-5 publication-authors">
             <div class="author-row">
               <span class="author-block"><a href="https://yyuncong.github.io/">Yuncong Yang</a>*<sup>1</sup>,</span>
-              <span class="author-block"><a href="https://www.hanzht.com/">Zhengtao Han</a>*<sup>1</sup>,</span>
-              <span class="author-block"><a href="https://www.linkedin.com/in/ozyurtf/">Furkan Özyurt</a>*<sup>2</sup>,</span>
+              <span class="author-block"><a href="https://www.hanzht.com/">Zhengtao Han</a>*<sup>2</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/ozyurtf/">Furkan Özyurt</a>*<sup>3</sup>,</span>
               <span class="author-block"><a href="https://miicheyang.github.io/">Zeyuan Yang</a><sup>1</sup>,</span>
             </div>
             <div class="author-row">
               <span class="author-block"><a href="https://hanyangclarence.github.io/">Han Yang</a><sup>1</sup>,</span>
               <span class="author-block"><a href="https://xjay18.github.io/">Junyi Cao</a><sup>1</sup>,</span>
               <span class="author-block"><a href="https://haoyuzhen.com/">Haoyu Zhen</a><sup>1</sup>,</span>
-              <span class="author-block"><a href="https://yilundu.github.io/">Yilun Du</a><sup>3</sup>,</span>
+              <span class="author-block"><a href="https://yilundu.github.io/">Yilun Du</a><sup>4</sup>,</span>
               <span class="author-block"><a href="https://people.csail.mit.edu/ganchuang/">Chuang Gan</a><sup>1</sup></span>
             </div>
           </div>
 
           <div class="is-size-5 publication-authors publication-affiliations">
             <span class="author-block"><sup>1</sup>UMass Amherst,</span>
-            <span class="author-block"><sup>2</sup>NYU,</span>
-            <span class="author-block"><sup>3</sup>Harvard</span>
+            <span class="author-block"><sup>2</sup>UC Berkeley,</span>
+            <span class="author-block"><sup>3</sup>NYU,</span>
+            <span class="author-block"><sup>4</sup>Harvard</span>
           </div>
 
           <div class="publication-note">* Equal contribution</div>
@@ -81,6 +82,22 @@
               </span>
             </span>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== Project Demo ======== -->
+<section class="section demo-video-section" aria-label="SyncWorld project video">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <div class="demo-video-shell">
+          <video controls playsinline preload="metadata">
+            <source src="./static/videos/syncworld_demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
     </div>
@@ -112,65 +129,65 @@
       <div class="content has-text-justified" style="max-width: 900px;">
         <p>
           We first provide additional qualitative comparisons for the world modeling results discussed in the main paper.
-          Specifically, we select examples spanning diverse environments (real-world, LIBERO, ManiSkill), camera viewpoints, and robot embodiments, and compare our generated video segments against the corresponding ground-truth videos.
+          Specifically, we select examples spanning diverse real-world and simulated environments, camera viewpoints, and robot embodiments, and compare our generated video segments against the corresponding ground-truth videos.
         </p>
 
       </div>
 
-      <!-- Row 1: Real examples -->
+      <!-- Row 1: Two xArm examples -->
       <div class="columns is-centered" style="margin-bottom: 0.5rem;">
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 1)</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Self-Collected - xArm (Example 1)</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/real_1.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/real_2.mp4" controls muted loop playsinline></video>
           </div>
         </div>
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 2)</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Self-Collected - xArm (Example 2)</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/real_2.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/real_3.mp4" controls muted loop playsinline></video>
           </div>
         </div>
       </div>
-      <!-- Row 2: Real + LIBERO -->
+      <!-- Row 2: ARX5 + KUKA -->
       <div class="columns is-centered" style="margin-bottom: 0.5rem;">
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Robot (Example 3)</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">ARX5 Manipulation Dataset - ARX5</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/real_3.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/arx5_webpage.mp4" controls muted loop playsinline></video>
           </div>
         </div>
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">LIBERO</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">RH20T - KUKA</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/libero_1.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/kuka_webpage.mp4" controls muted loop playsinline></video>
           </div>
         </div>
       </div>
-      <!-- Row 3: ManiSkill examples -->
+      <!-- Row 3: ManiSkill + RoboMind -->
       <div class="columns is-centered">
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">ManiSkill (Example 1)</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Maniskill - Franka Panda</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/maniskill_1.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/maniskill_1.mp4" controls muted loop playsinline></video>
           </div>
         </div>
         <div class="column is-6">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">ManiSkill (Example 2)</p>
+          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Robomind - UR5e</p>
           <div class="comparison-video">
             <span class="comparison-label comparison-label-gt">GT</span>
             <span class="comparison-label comparison-label-pred">Pred</span>
-            <video src="qualitative_results/segments_qualitative_examples_new/maniskill_2.mp4" controls muted loop playsinline></video>
+            <video autoplay src="qualitative_results/segments_qualitative_examples_final/robomind_webpage.mp4" controls muted loop playsinline></video>
           </div>
         </div>
       </div>
@@ -194,7 +211,7 @@
         <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Generated Rollout (SyncWorld)</p>
         <div class="columns is-centered">
           <div class="column is-10">
-            <video src="qualitative_results/multiview_consistency/pred_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+            <video autoplay src="qualitative_results/multiview_consistency/pred_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
           </div>
         </div>
       </div>
@@ -203,7 +220,7 @@
         <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Ground Truth</p>
         <div class="columns is-centered">
           <div class="column is-10">
-            <video src="qualitative_results/multiview_consistency/gt_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+            <video autoplay src="qualitative_results/multiview_consistency/gt_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
           </div>
         </div>
       </div>
@@ -242,17 +259,17 @@
       <div class="columns is-centered" style="margin-top: 1rem;">
         <div class="column is-8">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Concatenated Generated Rollout (SyncWorld)</p>
-          <video src="qualitative_results/policy_qualitative_examples/pred/bbq_sauce_concat.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/policy_qualitative_examples/pred/bbq_sauce_concat.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
       </div>
       <div class="columns is-centered">
         <div class="column is-4">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Improved Policy Trajectory (with GPC-Rank)</p>
-          <video src="qualitative_results/policy_qualitative_examples/baseline/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/policy_qualitative_examples/baseline/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
         <div class="column is-4">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Baseline Policy Trajectory (without GPC-Rank)</p>
-          <video src="qualitative_results/policy_qualitative_examples/gt/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/policy_qualitative_examples/gt/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
       </div>
 
@@ -271,160 +288,77 @@
       <div class="columns is-centered" style="margin-top: 1rem;">
         <div class="column is-4">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Eval Calibration Episode</p>
-          <video src="qualitative_results/calibration_examples/calibration_episode_5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
         <div class="column is-4">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Maniskill Eval Calibration Episode</p>
-          <video src="qualitative_results/calibration_examples/calibration_episode_6.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_6.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
         <div class="column is-4">
           <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">RLBench Training Calibration Episode</p>
-          <video src="qualitative_results/calibration_examples/calibration_episode_7.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_7.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
         </div>
       </div>
     </div>
 
     <!-- ===== 5. Controllability ===== -->
-    <div style="margin-bottom: 2rem;">
+    <div class="controllability-section">
       <h3 class="title is-3">Controllability</h3>
-      <div class="content has-text-justified" style="max-width: 900px;">
+      <div class="content has-text-justified controllability-intro">
         <p>
-          We first verify controllability in unseen environments with a <em>seen</em> embodiment (ManiSkill), where the model faithfully follows
-          primitive low-level motions [+x, +y, +z, +yaw, +pitch, +roll] and produces the expected directional changes in image space.
-          We then stress-test embodiment generalization by applying the same primitives on an <em>unseen</em> robot arm whose kinematics and
-          gripper geometry are absent from training. Despite this shift, the generated videos remain largely well controlled.
-        </p>
-        <p>
-          While the <em>without calibration</em> setting achieves numerically close performance in several main-paper experiments,
-          its qualitative controllability degrades here. Without explicit visual calibration, the model is less consistent in mapping
-          each action dimension to the correct visual motion direction, particularly on unseen embodiments.
+          We evaluate whether SyncWorld follows six primitive low-level motions
+          [+x, +y, +z, +yaw, +pitch, +roll] and produces the expected directional changes in image space.
+          The examples cover both a seen embodiment in an unseen ManiSkill environment and an unseen robot embodiment.
+          Select an action dimension below to inspect the corresponding generated motion.
         </p>
       </div>
 
-      <!-- ---- Seen Embodiment, Unseen Environment (ManiSkill) ---- -->
-      <h4 class="title is-4" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Seen Embodiment, Unseen Environment (ManiSkill)</h4>
+      <div class="dof-cases">
+        <article class="dof-case" data-dof-case>
+          <div class="dof-case__info">
+            <span class="dof-case__eyebrow">Seen embodiment · Unseen environment</span>
+            <h4 class="dof-case__title">ManiSkill</h4>
+            <p class="dof-case__description">Choose one translational or rotational action to view its isolated effect.</p>
+            <div class="dof-selector" role="group" aria-label="Select a ManiSkill action dimension">
+              <button class="dof-button is-active" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim0.mp4" data-label="+x" aria-pressed="true">+x</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim1.mp4" data-label="+y" aria-pressed="false">+y</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim2.mp4" data-label="+z" aria-pressed="false">+z</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim3.mp4" data-label="+yaw" aria-pressed="false">+yaw</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim4.mp4" data-label="+pitch" aria-pressed="false">+pitch</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib_maniskill/dim5.mp4" data-label="+roll" aria-pressed="false">+roll</button>
+            </div>
+          </div>
+          <div class="dof-viewer">
+            <div class="dof-viewer__header">
+              <span>Selected motion</span>
+              <strong data-active-dof aria-live="polite">+x</strong>
+            </div>
+            <video data-dof-video autoplay src="qualitative_results/controllability_captioned/with_calib_maniskill/dim0.mp4" controls muted loop playsinline></video>
+          </div>
+        </article>
 
-      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
-        <span class="tag is-success is-medium" style="vertical-align: middle; margin-right: 0.5rem;">With</span> Visual Calibration
-      </h5>
-      <div class="columns is-centered is-multiline" style="margin-bottom: 1.5rem;">
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
-          <video src="qualitative_results/controllability_captioned/with_calib_maniskill/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-      </div>
-
-      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
-        <span class="tag is-danger is-medium" style="vertical-align: middle; margin-right: 0.5rem;">Without</span> Visual Calibration
-      </h5>
-      <div class="columns is-centered is-multiline" style="margin-bottom: 2.5rem;">
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
-          <video src="qualitative_results/controllability_captioned/without_calib_maniskill/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-      </div>
-
-      <!-- ---- Unseen Embodiment ---- -->
-      <h4 class="title is-4" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Unseen Embodiment</h4>
-
-      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
-        <span class="tag is-success is-medium" style="vertical-align: middle; margin-right: 0.5rem;">With</span> Visual Calibration
-      </h5>
-      <div class="columns is-centered is-multiline" style="margin-bottom: 1.5rem;">
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
-          <video src="qualitative_results/controllability_captioned/with_calib/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-      </div>
-
-      <h5 class="title is-5" style="margin-bottom: 0.75rem; color: #363636;">
-        <span class="tag is-danger is-medium" style="vertical-align: middle; margin-right: 0.5rem;">Without</span> Visual Calibration
-      </h5>
-      <div class="columns is-centered is-multiline">
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+x</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim0.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+y</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim1.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+z</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim2.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+yaw</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim3.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+pitch</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim4.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.3rem;">+roll</p>
-          <video src="qualitative_results/controllability_captioned/without_calib/dim5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
+        <article class="dof-case" data-dof-case>
+          <div class="dof-case__info">
+            <span class="dof-case__eyebrow">Unseen embodiment</span>
+            <h4 class="dof-case__title">Cross-Embodiment Control</h4>
+            <p class="dof-case__description">The same six action primitives are applied to a robot absent from training.</p>
+            <div class="dof-selector" role="group" aria-label="Select an unseen-embodiment action dimension">
+              <button class="dof-button is-active" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim0.mp4" data-label="+x" aria-pressed="true">+x</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim1.mp4" data-label="+y" aria-pressed="false">+y</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim2.mp4" data-label="+z" aria-pressed="false">+z</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim3.mp4" data-label="+yaw" aria-pressed="false">+yaw</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim4.mp4" data-label="+pitch" aria-pressed="false">+pitch</button>
+              <button class="dof-button" type="button" data-dof-button data-src="qualitative_results/controllability_captioned/with_calib/dim5.mp4" data-label="+roll" aria-pressed="false">+roll</button>
+            </div>
+          </div>
+          <div class="dof-viewer">
+            <div class="dof-viewer__header">
+              <span>Selected motion</span>
+              <strong data-active-dof aria-live="polite">+x</strong>
+            </div>
+            <video data-dof-video autoplay src="qualitative_results/controllability_captioned/with_calib/dim0.mp4" controls muted loop playsinline></video>
+          </div>
+        </article>
       </div>
     </div>
 

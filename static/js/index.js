@@ -31,6 +31,47 @@ function createInterpolationSection(wrapperId, sliderId, basePath, numFrames) {
   });
 }
 
+function initializeDofSelectors() {
+  document.querySelectorAll('[data-dof-case]').forEach(function(caseElement) {
+    var video = caseElement.querySelector('[data-dof-video]');
+    var activeLabel = caseElement.querySelector('[data-active-dof]');
+    var buttons = caseElement.querySelectorAll('[data-dof-button]');
+
+    if (!video || !activeLabel || !buttons.length) {
+      return;
+    }
+
+    buttons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        var nextSource = button.getAttribute('data-src');
+        var nextLabel = button.getAttribute('data-label');
+
+        buttons.forEach(function(otherButton) {
+          var isSelected = otherButton === button;
+          otherButton.classList.toggle('is-active', isSelected);
+          otherButton.setAttribute('aria-pressed', String(isSelected));
+        });
+
+        activeLabel.textContent = nextLabel;
+
+        if (video.getAttribute('src') === nextSource) {
+          return;
+        }
+
+        video.setAttribute('src', nextSource);
+        video.load();
+
+        var playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(function() {
+            // Browser autoplay policies may require the user to press play.
+          });
+        }
+      });
+    });
+  });
+}
+
 
 $(document).ready(function() {
     // Check for click events on the navbar burger icon
@@ -77,6 +118,8 @@ $(document).ready(function() {
     createInterpolationSection('interpolation-image-wrapper-3', 'interpolation-slider-3', './static/interpolation/demo_video_3', 92);
 
     createInterpolationSection('interpolation-image-wrapper-4', 'interpolation-slider-4', './static/interpolation/demo_video_4', 119);
+
+    initializeDofSelectors();
 
     bulmaSlider.attach();
 
