@@ -70,16 +70,22 @@
 
           <div class="publication-links" aria-label="Project links">
             <span class="link-block">
-              <span class="button is-normal is-rounded is-dark is-static project-link-unavailable" aria-label="Paper coming soon">
+              <a href="https://arxiv.org/abs/2609.09155" class="external-link button is-normal is-rounded is-dark project-link" target="_blank" rel="noopener noreferrer" aria-label="Read the SyncWorld paper on arXiv">
                 <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                <span>Paper <small>Coming soon</small></span>
-              </span>
+                <span>arXiv</span>
+              </a>
             </span>
             <span class="link-block">
-              <span class="button is-normal is-rounded is-dark is-static project-link-unavailable" aria-label="Code coming soon">
+              <a href="https://github.com/UMass-Embodied-AGI/SyncWorld" class="external-link button is-normal is-rounded is-dark project-link" target="_blank" rel="noopener noreferrer" aria-label="View the SyncWorld code on GitHub">
                 <span class="icon"><i class="fab fa-github"></i></span>
-                <span>Code <small>Coming soon</small></span>
-              </span>
+                <span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://huggingface.co/yyuncong/SyncWorld" class="external-link button is-normal is-rounded is-dark project-link" target="_blank" rel="noopener noreferrer" aria-label="View the SyncWorld model on Hugging Face">
+                <span class="icon"><i class="fas fa-cube"></i></span>
+                <span>Model</span>
+              </a>
             </span>
           </div>
         </div>
@@ -123,15 +129,13 @@
 <section class="section" id="qualitative-results">
   <div class="container" style="max-width: 1100px;">
 
-    <!-- ===== 1. Additional Examples of World Model Quality ===== -->
-    <div style="margin-bottom: 4rem;">
-      <h3 class="title is-3">Additional Examples of World Model Quality</h3>
-      <div class="content has-text-justified" style="max-width: 900px;">
+    <!-- ===== 1. Robot Control in Unseen Worlds ===== -->
+    <div class="result-section">
+      <h3 class="title is-3">A World Model for Robot Control in Unseen Worlds</h3>
+      <div class="content has-text-justified result-copy">
         <p>
-          We first provide additional qualitative comparisons for the world modeling results discussed in the main paper.
-          Specifically, we select examples spanning diverse real-world and simulated environments, camera viewpoints, and robot embodiments, and compare our generated video segments against the corresponding ground-truth videos.
+          SyncWorld is an action-conditioned world model that uses in-context visual evidence to simulate how numerical robot controls change a scene. A single pretrained model adapts to unseen camera views, environments, and robot embodiments, predicting the visual outcome of low-level actions without fine-tuning or any downstream training. Below, each prediction is paired with its ground-truth outcome.
         </p>
-
       </div>
 
       <!-- Row 1: Two xArm examples -->
@@ -193,123 +197,79 @@
       </div>
     </div>
 
-    <!-- ===== 2. Cross-View 3D Consistency ===== -->
-    <div style="margin-bottom: 4rem;">
-      <h3 class="title is-3">Cross-View 3D Consistency</h3>
-      <div class="content has-text-justified" style="max-width: 900px;">
+    <!-- ===== 2. Visual Calibration ===== -->
+    <div class="result-section">
+      <h3 class="title is-3">Visual Calibration for In-Context World Modeling</h3>
+      <div class="content has-text-justified result-copy">
         <p>
-          We provide qualitative evidence that rollouts generated from different camera views are 3D consistent.
-          For the same action sequence, we generate videos from two distinct viewpoints and sample frames from both generated rollouts. We then apply VGGT to reconstruct a point cloud from each frame sequence.
+          The same numerical action can produce different pixel-space motion under a new camera, scene, robot placement, or embodiment. Visual calibration resolves this ambiguity with a short paired video–action episode in which the robot moves along each controllable DoF, directly revealing the setup-specific <em>Action–Visual Mapping</em>.
         </p>
         <p>
-          The resulting reconstructions show that the generated videos are visually consistent with a shared underlying 3D scene structure: the point clouds can be reconstructed reasonably well from both views, and their geometry is broadly consistent with each other as well as with the ground-truth reconstruction. These results provide additional evidence that the model captures more than view-specific appearance statistics, and instead learns a meaningful 3D-aware representation of the manipulated scene.
+          During pretraining, the ordered calibration segments are prepended as context alongside interaction history and future actions. This teaches the Diffusion Transformer to infer action meaning from visual evidence and generate controllable future frames in a new setup without parameter updates.
         </p>
       </div>
 
-      <!-- Prediction -->
-      <div style="margin-bottom: 1.5rem;">
-        <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Generated Rollout (SyncWorld)</p>
-        <div class="columns is-centered">
-          <div class="column is-10">
-            <video autoplay src="qualitative_results/multiview_consistency/pred_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-          </div>
+      <figure class="paper-figure">
+        <img src="./static/images/pipeline.png" alt="SyncWorld architecture showing visual calibration, interaction history, future actions, and predicted future frames" loading="lazy">
+        <figcaption>SyncWorld conditions video prediction on visual calibration, interaction history, and future numerical actions.</figcaption>
+      </figure>
+
+      <p class="section-kicker">Representative calibration episodes</p>
+      <div class="columns is-centered compact-video-row">
+        <div class="column is-4">
+          <p class="media-label">Real-world evaluation</p>
+          <video class="result-video" autoplay src="qualitative_results/calibration_examples/calibration_episode_5.mp4" controls muted loop playsinline></video>
         </div>
-      </div>
-      <!-- Ground Truth -->
-      <div>
-        <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem; font-size: 1.1rem;">Ground Truth</p>
-        <div class="columns is-centered">
-          <div class="column is-10">
-            <video autoplay src="qualitative_results/multiview_consistency/gt_video.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-          </div>
+        <div class="column is-4">
+          <p class="media-label">ManiSkill evaluation</p>
+          <video class="result-video" autoplay src="qualitative_results/calibration_examples/calibration_episode_6.mp4" controls muted loop playsinline></video>
+        </div>
+        <div class="column is-4">
+          <p class="media-label">RLBench pretraining</p>
+          <video class="result-video" autoplay src="qualitative_results/calibration_examples/calibration_episode_7.mp4" controls muted loop playsinline></video>
         </div>
       </div>
     </div>
 
-    <!-- ===== 3. Policy Improvement with GPC-Rank ===== -->
-    <div style="margin-bottom: 2rem;">
-      <h3 class="title is-3">Policy Improvement with GPC-Rank</h3>
-      <div class="content has-text-justified" style="max-width: 900px;">
+    <!-- ===== 3. Policy Improvement ===== -->
+    <div class="result-section">
+      <h3 class="title is-3">Zero-Shot Policy Improvement in Unseen Worlds</h3>
+      <div class="content has-text-justified result-copy">
         <p>
-          Finally, we visualize how our world model supports policy improvement through
-          <strong>GPC-Rank</strong> using a representative <code style="color: black;">pick up bbq sauce</code> example from LIBERO.
-        </p>
-        
-        <p>
-          For this case, we include three trajectories for comparison:
-        </p>
-        
-        <ul>
-          <li>
-            the full trajectory obtained by concatenating the generated rollout of the selected action candidate at each decision step;
-          </li>
-          <li>
-            the actual trajectory executed by the policy after test-time improvement with GPC-Rank;
-          </li>
-          <li>
-            the baseline trajectory without such improvement.
-          </li>
-
-        </ul>
-        
-        <p>
-          These qualitative comparisons illustrate how the world model can serve as a test-time simulator for action selection. In this example, the improved policy produces a more successful and stable pickup behavior, while the baseline trajectory fails to interact with the target object as reliably.
+          At test time, a VLA policy proposes several action chunks, SyncWorld imagines their visual outcomes from multiple views, and a VLM ranks the rollouts against the instruction. Executing the highest-scoring candidate turns the pretrained world model into a simulator for policy improvement—without updating either the policy or SyncWorld.
         </p>
       </div>
-      <div class="columns is-centered" style="margin-top: 1rem;">
+
+      <figure class="paper-figure paper-figure--wide">
+        <img src="./static/images/policy_improvement.png" alt="SyncWorld zero-shot policy improvement pipeline using candidate actions, imagined rollouts, and VLM ranking" loading="lazy">
+        <figcaption>Sample candidate actions, imagine their outcomes, rank them with a VLM, and execute the best candidate.</figcaption>
+      </figure>
+
+      <p class="section-kicker">Visual example · Pick up the BBQ sauce</p>
+      <div class="columns is-centered compact-video-row policy-rollout-row">
         <div class="column is-8">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Concatenated Generated Rollout (SyncWorld)</p>
-          <video autoplay src="qualitative_results/policy_qualitative_examples/pred/bbq_sauce_concat.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <p class="media-label">Selected imagined rollouts</p>
+          <video class="result-video" autoplay src="qualitative_results/policy_qualitative_examples/pred/bbq_sauce_concat.mp4" controls muted loop playsinline></video>
         </div>
       </div>
-      <div class="columns is-centered">
+      <div class="columns is-centered compact-video-row policy-trajectory-row">
         <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Improved Policy Trajectory (with GPC-Rank)</p>
-          <video autoplay src="qualitative_results/policy_qualitative_examples/baseline/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <p class="media-label">Improved policy trajectory</p>
+          <video class="result-video" autoplay src="qualitative_results/policy_qualitative_examples/baseline/trajectory.mp4" controls muted loop playsinline></video>
         </div>
         <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Baseline Policy Trajectory (without GPC-Rank)</p>
-          <video autoplay src="qualitative_results/policy_qualitative_examples/gt/trajectory.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ===== 4. Calibration Videos ===== -->
-    <div style="margin-bottom: 4rem;">
-      <h3 class="title is-3">Calibration Videos</h3>
-      <div class="content has-text-justified" style="max-width: 900px;">
-        <p>
-          We include representative visual calibration episodes that specify the setup-specific action--visual mapping.
-          The motion order, direction, and magnitude vary across episodes, yet each sequence provides enough visual evidence for the model to infer controllable image-space motion.
-        </p>
-      </div>
-
-      <div class="columns is-centered" style="margin-top: 1rem;">
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Real Eval Calibration Episode</p>
-          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_5.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">Maniskill Eval Calibration Episode</p>
-          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_6.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
-        </div>
-        <div class="column is-4">
-          <p class="has-text-centered has-text-weight-semibold" style="margin-bottom: 0.4rem;">RLBench Training Calibration Episode</p>
-          <video autoplay src="qualitative_results/calibration_examples/calibration_episode_7.mp4" controls muted loop playsinline style="width: 100%; border-radius: 6px;"></video>
+          <p class="media-label">Baseline policy trajectory</p>
+          <video class="result-video" autoplay src="qualitative_results/policy_qualitative_examples/gt/trajectory.mp4" controls muted loop playsinline></video>
         </div>
       </div>
     </div>
 
-    <!-- ===== 5. Controllability ===== -->
-    <div class="controllability-section">
-      <h3 class="title is-3">Controllability</h3>
+    <!-- ===== 4. Controllability ===== -->
+    <div class="result-section controllability-section">
+      <h3 class="title is-3">Fine-Grained Controllability</h3>
       <div class="content has-text-justified controllability-intro">
         <p>
-          We evaluate whether SyncWorld follows six primitive low-level motions
-          [+x, +y, +z, +yaw, +pitch, +roll] and produces the expected directional changes in image space.
-          The examples cover both a seen embodiment in an unseen ManiSkill environment and an unseen robot embodiment.
-          Select an action dimension below to inspect the corresponding generated motion.
+          We test whether six numerical motion controls remain visually grounded after domain shift. Select a DoF to inspect its isolated outcome for a seen embodiment in a new environment and for an entirely unseen robot embodiment.
         </p>
       </div>
 
@@ -362,6 +322,52 @@
       </div>
     </div>
 
+    <!-- ===== 5. Cross-View 3D Consistency ===== -->
+    <div class="result-section result-section--last">
+      <h3 class="title is-3">Cross-View 3D Consistency</h3>
+      <div class="content has-text-justified result-copy">
+        <p>
+          Reliable action simulation should preserve a shared 3D scene across viewpoints. For the same actions, we reconstruct point clouds from SyncWorld rollouts generated in two camera views; their geometry agrees with each other and with ground truth, indicating 3D-consistent dynamics rather than view-specific appearance matching.
+        </p>
+      </div>
+
+      <div class="cross-view-video-stack">
+        <div class="columns is-centered compact-video-row">
+          <div class="column is-10">
+            <p class="media-label">Generated rollout · SyncWorld</p>
+            <video class="result-video" autoplay src="qualitative_results/multiview_consistency/pred_video.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+        <div class="columns is-centered compact-video-row">
+          <div class="column is-10">
+            <p class="media-label">Ground truth</p>
+            <video class="result-video" autoplay src="qualitative_results/multiview_consistency/gt_video.mp4" controls muted loop playsinline></video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======== Citation ======== -->
+<section class="section citation-section" id="citation">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Citation</h2>
+        <p class="citation-intro">If you find SyncWorld useful, please cite our work:</p>
+        <pre class="citation-block"><code>@misc{yang2026syncworldvisualcalibrationenablesworld,
+  title        = {{SyncWorld}: Visual Calibration Enables World Models as Zero-Shot Simulators},
+  author       = {Yuncong Yang and Zhengtao Han and Furkan Ozyurt and Zeyuan Yang and Han Yang and Junyi Cao and Haoyu Zhen and Yilun Du and Chuang Gan},
+  year         = {2026},
+  eprint       = {2609.09155},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url          = {https://arxiv.org/abs/2609.09155}
+}</code></pre>
+      </div>
+    </div>
   </div>
 </section>
 
