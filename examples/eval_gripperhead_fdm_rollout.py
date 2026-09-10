@@ -327,6 +327,17 @@ def _wrist_video_path(leaf: str):
     return None
 
 
+def _center_square_crop_np(a: np.ndarray) -> np.ndarray:
+    """Center-square-crop (T,H,W,3) -> (T,m,m,3), m=min(H,W). Mirrors the training dataset's
+    _center_square_crop so non-square eval sources match the square tier the model trained on."""
+    h, w = a.shape[1], a.shape[2]
+    if h == w:
+        return a
+    m = min(h, w)
+    top, left = (h - m) // 2, (w - m) // 2
+    return a[:, top:top + m, left:left + m]
+
+
 def read_episode(leaf: str, view: str, res: int, device: str, use_wrist: bool = False):
     """Return (frames_pm1 (T,3,H,W) in [-1,1], mats (T,4,4), gopen (T,), caption) for camera ``view``
     (a dir name like ``agentview_rgb`` / ``left_rgb`` / ``rgb``). For use_wrist the frame is
@@ -336,12 +347,12 @@ def read_episode(leaf: str, view: str, res: int, device: str, use_wrist: bool = 
     rgb_p = os.path.join(leaf, view, "video.mp4")
     if not os.path.isfile(rgb_p):
         raise FileNotFoundError(f"no '{view}' video in {leaf}")
-    rgb = _read_video(rgb_p)  # (T,H,W,3)
+    rgb = _center_square_crop_np(_read_video(rgb_p))  # (T,m,m,3) — square, like training
     T = len(rgb)
     if use_wrist:
         wp = _wrist_video_path(leaf)
         if wp is not None:
-            wrist = _read_video(wp)  # (T,H',W',3)
+            wrist = _center_square_crop_np(_read_video(wp))  # (T,m',m',3) — square, like training
             n = min(T, len(wrist))
             rgb, wrist = rgb[:n], wrist[:n]
             T = n
@@ -514,7 +525,7 @@ def build_calib_eval_items(calib_dir: str, args, device, view: str = "rgb"):
     rgb_p = os.path.join(calib_dir, view, "video.mp4")
     if not os.path.isfile(rgb_p):
         raise FileNotFoundError(f"no calib '{view}' video in {calib_dir}")
-    frames = _read_video(rgb_p)
+    frames = _center_square_crop_np(_read_video(rgb_p))  # square, like read_episode + training
     T = len(frames)
     v = torch.from_numpy(frames).float().permute(0, 3, 1, 2) / 255.0  # (T,C,H,W)
     _, _, Hh, Ww = v.shape
@@ -533,7 +544,12 @@ def build_calib_eval_items(calib_dir: str, args, device, view: str = "rgb"):
             move_order = None
     sub = list(range(0, n, args.calib_frame_interval)) or [0]        # subsample before segment detection
     efficient = (args.calib_segments == 6)                           # 6 -> per-DoF (move_order signs); 12 -> both signs
-    seg_lists = build_calib_segment_indices(mats[sub], args.calib_seg_len, efficient, move_order)
+    # Eval never applies axis augmentation, so the action poses ARE the raw poses; passed explicitly
+    # to mirror the training call, where they are the augmented ones.
+    seg_lists = build_calib_segment_indices(mats[sub], args.calib_seg_len, efficient, move_order,
+                                           positive_body_actions=bool(
+                                               getattr(args, "calib_positive_actions", True)),
+                                           action_mats=mats[sub])
     vids, acts = [], []
     for seg in seg_lists:
         real = [sub[i] for i in seg]                                 # map subsampled -> raw calib frame idx
@@ -813,6 +829,7 @@ def _run_view_eval(model, leaves, view, args, out_view_dir, lpips_model, device,
     summary = {"tag": args.tag, "camera_view": view, "checkpoint": args.checkpoint, "n_episodes": n_ep,
                "n_segments": len(all_rows), "num_rollout_rounds": args.num_rollout_rounds,
                "action_cfg_scale": args.action_cfg_scale, "world_size": world,
+               "calib_positive_actions": bool(getattr(args, "calib_positive_actions", True)),
                "average_metrics": {c: (round(v, 5) if np.isfinite(v) else None) for c, v in avg.items()}}
     (out_view_dir / "summary.json").write_text(json.dumps(summary, indent=2))
     print(f"\n[{args.tag}/{view}] ===== AVERAGE over {n_ep} episodes / {len(all_rows)} segments (world={world}) =====", flush=True)
@@ -890,6 +907,10 @@ def main():
     g.add_argument("--calib-frame-interval", type=int, default=3,
                    help="subsample stride on the raw calib clip before segment detection; "
                         "matches [gripperhead].calib_frame_interval")
+    g.add_argument("--calib-positive-actions", action=argparse.BooleanOptionalAction, default=True,
+                   help="select each 6-segment calib slot on the BODY-FRAME action so it is a positive "
+                        "sweep of its DoF. Must match [gripperhead].calib_positive_body_actions used in "
+                        "training. No effect at --calib-segments 12.")
 
     g = ap.add_argument_group("action representation (MUST match the trained checkpoint)")
     g.add_argument("--action-convention", default="backward_framewise",

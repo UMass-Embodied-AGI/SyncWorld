@@ -192,17 +192,59 @@ def seg_len_internal(seg_len: int) -> Tuple[int, bool]:
     raise ValueError(f"calib seg_len must be (1+4n) or (4n), got {seg_len}")
 
 
+def _body_action_component(mats: np.ndarray, idxs: List[int], dim: int) -> float:
+    """Signed magnitude of the BODY-frame action along ``dim`` accumulated over ``idxs``.
+
+    This is the quantity the model actually consumes (the action block is built from
+    backward_framewise body deltas ``T_i^-1 @ T_i+1``), so it — not the world-frame pose series —
+    decides whether a calib segment reads as a POSITIVE sweep of that DoF."""
+    if len(idxs) < 2:
+        return 0.0
+    tot = 0.0
+    for a, b in zip(idxs[:-1], idxs[1:]):
+        T = np.linalg.inv(np.asarray(mats[a], dtype=np.float64)) @ np.asarray(mats[b], dtype=np.float64)
+        if dim < 3:
+            tot += float(T[dim, 3])
+        else:
+            tot += float(_rotmat_to_euler_zyx(T[:3, :3])[dim - 3])   # (yaw,pitch,roll) = dims 3,4,5
+    return tot
+
+
+def _body_action_vec6(mats: np.ndarray, idxs: List[int]) -> np.ndarray:
+    """Accumulated BODY-frame action over ``idxs`` as a 6-vector in _AXIS_SPECS order
+    (x, y, z, yaw, pitch, roll). This is what the model consumes, so positivity must be judged here."""
+    v = np.zeros(6, dtype=np.float64)
+    if len(idxs) < 2:
+        return v
+    for a, b in zip(idxs[:-1], idxs[1:]):
+        T = np.linalg.inv(np.asarray(mats[a], dtype=np.float64)) @ np.asarray(mats[b], dtype=np.float64)
+        v[:3] += T[:3, 3]
+        v[3:] += _rotmat_to_euler_zyx(T[:3, :3])          # (yaw, pitch, roll)
+    return v
+
+
 def build_calib_segment_indices(mats: np.ndarray, seg_len: int, efficient: bool = True,
-                                movement_order=None) -> List[List[int]]:
+                                movement_order=None, positive_body_actions: bool = True,
+                                action_mats: "np.ndarray | None" = None) -> List[List[int]]:
     """Detect K per-axis calibration segments from calib poses.
 
     Args:
-        mats: (T,4,4) absolute gripper poses of the calibration clip.
+        mats: (T,4,4) absolute gripper poses of the calibration clip. Run DETECTION always uses these
+            (raw, un-augmented) poses so the per-axis monotone-run detection + move_order signs stay valid.
         seg_len: OUTPUT frames per segment (1+4n or 4n).
         efficient: True -> 6 segments (one per DoF); False -> 12 (both signs per DoF).
         movement_order: optional move_range.pkl `movement_order`; in efficient mode its per-axis
             sign is used to detect the correct run (LIBERO calibs sweep some axes negative). If
             absent, efficient mode falls back to the positive direction per axis.
+        positive_body_actions: efficient mode only. Pick, for each DoF slot, the run whose BODY-FRAME
+            ACTION along that DoF is POSITIVE (the "<axis>_pos" contract), choosing among ALL 12
+            candidate runs (6 axes x both sweep signs). Must be the same at training and
+            evaluation time.
+        action_mats: (T,4,4) poses used to EVALUATE the action for that choice — pass the
+            AXIS-AUGMENTED poses when axis aug is active. Under the body-frame relabel R@S the action
+            picks up S^T, which permutes AND flips components: the positive set BEFORE augmentation is
+            not the positive set AFTER it. Selecting on the augmented action keeps every emitted slot
+            positive in the frame the model actually sees. Defaults to ``mats`` (no augmentation).
 
     Returns:
         list of K index-lists, each of length `seg_len`, in canonical axis order (x,y,z,yaw,pitch,roll;
@@ -216,18 +258,44 @@ def build_calib_segment_indices(mats: np.ndarray, seg_len: int, efficient: bool 
         return [[0] * seg_len for _ in range(K)]
     pose6 = _mat4s_to_abs_pose6(np.asarray(mats, dtype=np.float32))
     order_signs = parse_movement_order(movement_order) if efficient else {}
+
+    def _emit(idxs: List[int]) -> List[int]:
+        idxs = _pad_or_trim_indices(idxs or [0], internal_len)
+        return idxs[1:] if drop_first else idxs   # drop the anchor step -> length seg_len
+
+    if efficient and positive_body_actions:
+        # Build ALL 12 candidate runs (6 axes x both sweep signs) from the RAW pose series, then score
+        # each by its (possibly augmented) body-frame action and give slot j the run that moves most
+        # POSITIVELY along DoF j. Scoring across all 12 — not just the two runs of axis j — is required
+        # because S^T RELABELS axes: post-augmentation "+x" can be the pre-augmentation "-z" run.
+        amats = np.asarray(mats if action_mats is None else action_mats, dtype=np.float64)
+        cands: List[Tuple[List[int], np.ndarray]] = []
+        for _n, d, ang, mabs in _AXIS_SPECS:
+            for cand_sign in (+1, -1):
+                c = _segment_indices_monotone_axis(pose6[:, int(d)], bool(ang), int(cand_sign),
+                                                   float(mabs), expand=0)
+                if c:
+                    cands.append((c, _body_action_vec6(amats, c)))
+        out: List[List[int]] = []
+        for _n, d, _a, _m in _AXIS_SPECS:
+            best, best_val = None, None
+            for c, vec in cands:
+                val = float(vec[int(d)])
+                if best_val is None or val > best_val:
+                    best, best_val = c, val
+            out.append(_emit(list(best) if (best is not None and (best_val or 0.0) > 0.0) else [0]))
+        assert len(out) == K and all(len(s) == seg_len for s in out), (
+            f"expected {K} segments of len {seg_len}, got {[len(s) for s in out]}"
+        )
+        return out
+
     out: List[List[int]] = []
     for _name, dim, is_ang, min_abs in _AXIS_SPECS:
         series = pose6[:, int(dim)]
         signs = [int(order_signs.get(int(dim), 1))] if efficient else [+1, -1]
         for sign in signs:
             idxs = _segment_indices_monotone_axis(series, bool(is_ang), int(sign), float(min_abs), expand=0)
-            if not idxs:
-                idxs = [0]
-            idxs = _pad_or_trim_indices(idxs, internal_len)
-            if drop_first:
-                idxs = idxs[1:]  # drop the anchor step -> length seg_len
-            out.append(idxs)
+            out.append(_emit(idxs))
     assert len(out) == K and all(len(s) == seg_len for s in out), (
         f"expected {K} segments of len {seg_len}, got {[len(s) for s in out]}"
     )

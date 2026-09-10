@@ -129,9 +129,14 @@ items are prepended to the sample, ahead of the history and the current+future c
 fully-conditioning context. They are emitted in a canonical order (x, y, z, yaw, pitch, roll)
 regardless of the order they were recorded in, so the model always sees the DoFs in the same slots.
 
-`move_range.pkl` is optional — without it the segmenter assumes a positive sweep per axis, which
-costs accuracy on datasets that sweep some axes negative. The published ManiSkill and LIBERO sets
-have none; the real set does.
+`move_range.pkl` is optional — without it the segmenter assumes a positive world-frame sweep per
+axis. The published ManiSkill and LIBERO sets have none.
+
+Runs are detected in the world frame, but which run fills each slot is decided on the body-frame
+action, so every slot is a positive sweep of its DoF. That is
+`gripperhead.calib_positive_body_actions` (on by default; eval:
+`--no-calib-positive-actions` to turn it off), and it must match between training and evaluation —
+see [Differences from the paper](./paper_differences.md#3-calibration-12-segments--6).
 
 See [Evaluation](../README.md#2-prepare-the-evaluation-set) for the on-disk layout, and
 `--calib-null` for evaluating without calibration at all.

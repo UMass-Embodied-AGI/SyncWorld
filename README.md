@@ -310,12 +310,13 @@ so changing the horizon also moves the VAE's encode lengths:
 -- gripperhead.task_mode=inverse_dynamics gripperhead.num_history=9 gripperhead.use_calibration=false
 ```
 
-Two settings deserve a decision before a real run:
+Three settings deserve a decision before a real run:
 
-| Setting                           | When to change it                                                                                                                                                                                      |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `gripperhead.resume_action_heads` | `true` (default) inherits trained action heads from `checkpoint.load_path`, for continuing a gripperhead run. Set **`false` when starting from the Cosmos3-Nano base**, so the heads initialize fresh. |
-| `gripperhead.use_calibration`     | `true` requires a sibling `calibration/` directory per episode. Set `false` for datasets without a calibration sweep; this also drops the teacher/student consistency term.                            |
+| Setting                                   | When to change it                                                                                                                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gripperhead.resume_action_heads`         | `true` (default) inherits trained action heads from `checkpoint.load_path`, for continuing a gripperhead run. Set **`false` when starting from the Cosmos3-Nano base**, so the heads initialize fresh.   |
+| `gripperhead.use_calibration`             | `true` requires a sibling `calibration/` directory per episode. Set `false` for datasets without a calibration sweep; this also drops the teacher/student consistency term.                              |
+| `gripperhead.calib_positive_body_actions` | `true` (default) makes each 6-segment calibration slot a positive body-frame sweep of its DoF. Whatever you pick, evaluate with the matching `--calib-positive-actions` / `--no-calib-positive-actions`. |
 
 ### Continuing from the released checkpoint
 

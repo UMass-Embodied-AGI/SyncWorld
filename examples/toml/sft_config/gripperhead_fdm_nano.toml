@@ -96,6 +96,9 @@ calib_segments        = 6
 calib_seg_len         = 5
 calib_frame_interval  = 3
 p_include_calibration = 0.9
+# Select each of the 6 slots on the body-frame action so it is a positive sweep of its DoF.
+# Must match the setting used at eval time. See docs/paper_differences.md.
+calib_positive_body_actions = true
 
 # Augmentation.
 p_pose_axis_aug        = 0.6      # 0 disables axis aug entirely

@@ -251,6 +251,10 @@ class GripperheadFDMDataset(Dataset):
         calib_seg_len: int = 5,               # frames per calib segment (1+4n or 4n)
         calib_frame_interval: int = 3,        # subsample stride on the raw calib clip before detection
         calib_dirname: str = "calibration",
+        # Select every efficient (6-segment) calib slot on the BODY-FRAME action so it is a POSITIVE
+        # sweep of its DoF. Must match the setting the checkpoint was trained with. No effect in
+        # 12-segment mode.
+        calib_positive_body_actions: bool = True,
         p_include_history: float = 0.8,        # prob to include real history WHEN calib is present (calib-null forces history)
         p_include_calibration: float = 0.9,    # prob to include real calibration (else black null-placeholder + drop flag)
         # --- variable-length history/future sampling ---
@@ -345,6 +349,7 @@ class GripperheadFDMDataset(Dataset):
         self.calib_efficient = self.calib_num_segments == 6
         self.calib_seg_len = int(calib_seg_len)
         self.calib_frame_interval = max(1, int(calib_frame_interval))
+        self.calib_positive_body_actions = bool(calib_positive_body_actions)
         self.calib_dirname = str(calib_dirname)
         # float() FIRST: these can arrive as env-interpolated strings (e.g. "1.0") from the config,
         # and max(0.0, "1.0") would raise TypeError('>' not supported between str and float).
@@ -999,8 +1004,14 @@ class GripperheadFDMDataset(Dataset):
                 move_order = None
         n = min(len(cmats), len(calib_rgb))
         sub = list(range(0, n, self.calib_frame_interval)) or [0]
-        seg_lists = build_calib_segment_indices(cmats[sub], self.calib_seg_len, self.calib_efficient, move_order)
         cmats_act = self._apply_axis_st(cmats, *axis_st) if axis_st is not None else cmats  # augmented poses for actions
+        # Detect runs on the RAW poses (keeps monotone-run detection + move_order signs valid) but
+        # SELECT the positive set on the AUGMENTED poses, which is the action the model receives:
+        # axis aug relabels the body frame, so the positive set before aug is not the one after it.
+        seg_lists = build_calib_segment_indices(cmats[sub], self.calib_seg_len, self.calib_efficient,
+                                                move_order,
+                                                positive_body_actions=self.calib_positive_body_actions,
+                                                action_mats=cmats_act[sub])
         vids, acts = [], []
         for seg in seg_lists:
             real = [sub[i] for i in seg]  # map subsampled indices back to raw calib frame indices
@@ -1249,6 +1260,7 @@ def get_gripperhead_fdm_sft_dataset(
     calib_num_segments: int = 6,
     calib_seg_len: int = 5,
     calib_frame_interval: int = 3,
+    calib_positive_body_actions: bool = True,
     p_include_history: float = 0.8,
     p_include_calibration: float = 0.9,
     history_min_frames: int = 9,
@@ -1336,6 +1348,7 @@ def get_gripperhead_fdm_sft_dataset(
         calib_num_segments=calib_num_segments,
         calib_seg_len=calib_seg_len,
         calib_frame_interval=calib_frame_interval,
+        calib_positive_body_actions=_as_bool(calib_positive_body_actions),
         p_include_history=p_include_history,
         p_include_calibration=p_include_calibration,
         history_min_frames=history_min_frames,

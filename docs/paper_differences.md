@@ -57,18 +57,32 @@ Two practical consequences:
 ## 3. Calibration: 12 segments → 6
 
 The paper conditions on **12** calibration segments — both directions of each of the 6
-end-effector DoFs. The released model uses **6**, keeping only the **positive** direction per DoF:
+end-effector DoFs. The released model uses **6**, one slot per DoF:
 
 ```python
-calib_segments = 6      # x, y, z, yaw, pitch, roll  (positive sweep only)
+calib_segments = 6      # x, y, z, yaw, pitch, roll
 calib_seg_len  = 5      # frames per segment
 ```
 
 Halving the calibration context roughly halves the tokens spent on it, which is a large share of
-the sequence at 512×512. Because the segmenter re-detects each axis from the pose trajectory and
-reads the realized direction from `move_range.pkl`, a negative-direction sweep is still consumed
-correctly — it is simply mapped onto the same positive-axis slot rather than occupying a second
-one. Segments are always emitted in the canonical order `(x, y, z, yaw, pitch, roll)`, so the model
-sees each DoF in a fixed position.
+the sequence at 512×512. Segments are always emitted in the canonical order
+`(x, y, z, yaw, pitch, roll)`, so the model sees each DoF in a fixed slot.
+
+Each slot is required to be a **positive** sweep of its DoF, and positivity is judged on the
+**body-frame action** — the quantity the model actually receives — rather than on the world-frame
+pose series the runs are detected from. `gripperhead.calib_positive_body_actions` (on by default)
+scores all twelve candidate runs (6 axes × both sweep directions) and gives slot *k* the one that
+moves most positively along DoF *k*.
+
+Scoring across all twelve rather than just the two runs of axis *k* matters once axis augmentation
+is active: augmentation right-multiplies the rotation, so the body-frame action picks up `Sᵀ`,
+which both flips signs and **permutes** axes. The demonstration that reads as `+x` after
+augmentation may be the raw `-z` run, which a per-axis search would never consider. Detection stays
+on the raw poses — that keeps monotone-run detection and the `move_range.pkl` signs valid — while
+the selection is scored on the augmented poses.
+
+The setting has to be the same at training and evaluation time; evaluation exposes it as
+`--calib-positive-actions` / `--no-calib-positive-actions`. It has no effect at
+`calib_segments = 12`, which emits both directions explicitly.
 
 See [Visual Calibration](./visual_calibration.md) for how the sweeps are produced and segmented.

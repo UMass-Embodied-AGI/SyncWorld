@@ -806,6 +806,16 @@ class GripperheadConfig(BaseModel):
     calib_frame_interval: int = Field(
         default=3, description="Subsample stride on the raw calib clip before segment detection."
     )
+    calib_positive_body_actions: bool = Field(
+        default=True,
+        description=(
+            "Select each 6-segment calibration slot on the BODY-FRAME action, scoring all twelve "
+            "candidate runs (6 axes x both sweep directions) so every slot is a positive sweep of "
+            "its DoF; when axis augmentation is active the scoring uses the augmented poses. "
+            "This flag MUST be the same at training and evaluation time. No effect when "
+            "calib_segments=12, which emits both directions."
+        ),
+    )
     p_include_calibration: float = Field(
         default=0.9,
         description="P(include real calibration); otherwise a black null-placeholder + drop flag.",
